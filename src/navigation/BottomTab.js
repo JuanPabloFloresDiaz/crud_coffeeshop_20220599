@@ -21,9 +21,9 @@ export default function BottomTab({ logueado, setLogueado }) {
         component={renderHomeScreen}
         options={{
           title: 'Inicio',
-          tabBarActiveTintColor: '#FFC300', // Color activo de la pestaña
+          tabBarActiveTintColor: '#6200ee', // Color activo de la pestaña
           headerStyle: {
-            backgroundColor: '#FFC300', // Color del header
+            backgroundColor: '#6200ee', // Color del header
           },
           headerTintColor: '#fff', // Color del texto en el header
           tabBarIcon: ({ color }) => ( // Función que define el ícono de la pestaña

@@ -1,57 +1,50 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert} from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
+import fetchData from '../../api/components';
 
-const LoginScreen = ({logueado, setLogueado}) => {
+const LoginScreen = ({ logueado, setLogueado }) => {
 
   //Estado de la app
   const [alias, setAlias] = useState('');
   const [clave, setClave] = useState('');
-  let ip = `10.10.0.165`;
-  const handleLogin = async () => {
-    // Lógica de inicio de sesión
-   
-    let url=`http://${ip}/coffeeshop/api/services/admin/administrador.php?action=logIn`;
 
+  const USER_API = 'services/admin/administrador.php';
+
+  const handleLogin = async () => {
+    //Realizar la petición http 
+    // Lógica de inicio de sesión
     const formData = new FormData();
     formData.append('alias', alias)
     formData.append('clave', clave)
-
-    //Realizar la petición http 
-    const fetchApi = await fetch(url, {
-      method: 'POST',
-      body: formData
-    })
-    
-    const datos = await fetchApi.json();
-    if(datos.status){
-      setLogueado(!logueado)
+    const data = await fetchData(USER_API, 'logIn', formData);
+    try {
+      if (data.status) {
+        setLogueado(!logueado)
+      } else {
+        console.log(data);
+        // Alert the user about the error
+        console.log(data.error);
+        Alert.alert('Error sesion', data.error);
+      }
+    } catch (error) {
+      console.log(data.error);
+      Alert.alert('Error sesion', data.error);
     }
-    else {
-      console.log(datos);
-      // Alert the user about the error
-      Alert.alert('Error sesion', datos.error);
-    }
-
-
   };
 
-  
-  const handleLogOut = async ()=>{
-    const url = `http://${ip}/coffeeshop/api/services/admin/administrador.php?action=logOut`;
-     //Realizar la petición http 
-     const fetchApi = await fetch(url)
-    const datos = await fetchApi.json();
-    if(datos.status){
-      setLogueado(false)
+  const handleLogOut = async () => {
+    const data = await fetchData(USER_API, 'logOut');
+    try {
+      if (data.status) {
+        setLogueado(false)
+      }else{
+        Alert.alert('Error sesion', data.error);
+      }
+    } catch (error) {
+      console.log(data.error);
+      Alert.alert('Error sesion', data.error);
     }
-    else {
-      console.log(datos);
-      // Alert the user about the error
-      Alert.alert('Error sesion', datos.error);
-    }
-
-
   }
 
   return (
