@@ -35,21 +35,6 @@ const LoginScreen = ({ logueado, setLogueado }) => {
     }
   };
 
-  // Manejo de cierre de sesión
-  const handleLogOut = async () => {
-    try {
-      const data = await fetchData(USER_API, 'logOut');
-      if (data.status) {
-        setLogueado(false);
-      } else {
-        Alert.alert('Error sesion', data.error);
-      }
-    } catch (error) {
-      console.log(data.error);
-      Alert.alert('Error sesion', data.error);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenido</Text>
@@ -70,9 +55,6 @@ const LoginScreen = ({ logueado, setLogueado }) => {
       />
       <Button mode="contained" onPress={handleLogin} style={styles.button}>
         Iniciar Sesión
-      </Button>
-      <Button mode="contained" onPress={handleLogOut} style={styles.button}>
-        Cerrar Sesión
       </Button>
     </View>
   );
