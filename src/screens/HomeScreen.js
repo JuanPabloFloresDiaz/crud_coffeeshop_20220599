@@ -4,7 +4,6 @@ import { View, FlatList, StyleSheet, ActivityIndicator, TextInput, TouchableOpac
 import { Text, Button, Modal, Dialog, Paragraph, Portal, PaperProvider } from 'react-native-paper';
 import fetchData from '../../api/components';
 
-
 const HomeScreen = ({ logueado, setLogueado }) => {
 
   const [visible, setVisible] = useState(false);
@@ -162,17 +161,19 @@ const HomeScreen = ({ logueado, setLogueado }) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.cardText}>{item.id_administrador}</Text>
-      <Text style={styles.cardText}>{item.nombre_administrador}</Text>
-      <Text style={styles.cardText}>{item.apellido_administrador}</Text>
-      <Text style={styles.cardText}>{item.correo_administrador}</Text>
-      <Text style={styles.cardText}>{item.alias_administrador}</Text>
-      <TouchableOpacity style={styles.buttonActualizar} onPress={() => openUpdate(item.id_administrador)}>
-        <Text style={styles.botonAgregarTexto}>Actualizar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonEliminar} onPress={() => showDeleteDialog(item.id_administrador)}>
-        <Text style={styles.botonAgregarTexto}>Eliminar</Text>
-      </TouchableOpacity>
+      <Text style={styles.cardText}><Text style={styles.cardLabel}>ID: </Text>{item.id_administrador}</Text>
+      <Text style={styles.cardText}><Text style={styles.cardLabel}>Nombre: </Text>{item.nombre_administrador}</Text>
+      <Text style={styles.cardText}><Text style={styles.cardLabel}>Apellido: </Text>{item.apellido_administrador}</Text>
+      <Text style={styles.cardText}><Text style={styles.cardLabel}>Correo: </Text>{item.correo_administrador}</Text>
+      <Text style={styles.cardText}><Text style={styles.cardLabel}>Alias: </Text>{item.alias_administrador}</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonActualizar} onPress={() => openUpdate(item.id_administrador)}>
+          <Text style={styles.botonTexto}>Actualizar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonEliminar} onPress={() => showDeleteDialog(item.id_administrador)}>
+          <Text style={styles.botonTexto}>Eliminar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
   
@@ -191,7 +192,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
   }
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#6200ee" />;
   }
 
   return (
@@ -202,14 +203,14 @@ const HomeScreen = ({ logueado, setLogueado }) => {
           <Text style={styles.errorText}>Error: {error.message}</Text>
         )}
         <Portal>
-          <Modal visible={visible} onDismiss={hideModal} style={styles.container}>
+          <Modal visible={visible} onDismiss={hideModal} style={styles.modal}>
             <View style={styles.containerInput}>
               <View style={styles.containerRow}>
                 <Text style={styles.title}>
                   {idToUpdate ? 'Actualizar Administrador' : 'Agregar Administrador'}
                 </Text>
                 <TouchableOpacity style={styles.buttonClose} onPress={hideModal}>
-                  <Text style={styles.botonAgregarTexto}>X</Text>
+                  <Text style={styles.botonTexto}>X</Text>
                 </TouchableOpacity>
               </View>
               <TextInput
@@ -258,7 +259,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
                 editable={!idToUpdate} // Deshabilitar en actualización
               />
               <TouchableOpacity style={styles.botonAgregar} onPress={handleSubmit}>
-                <Text style={styles.botonAgregarTexto}>{idToUpdate ? 'Actualizar administrador' : 'Agregar administrador'}</Text>
+                <Text style={styles.botonTexto}>{idToUpdate ? 'Actualizar administrador' : 'Agregar administrador'}</Text>
               </TouchableOpacity>
             </View>
           </Modal>
@@ -274,12 +275,13 @@ const HomeScreen = ({ logueado, setLogueado }) => {
           </Dialog>
         </Portal>
         <Button style={styles.botonAgregar} onPress={showModal}>
-          <Text style={styles.botonAgregarTexto}>Agregar registro</Text>
+          <Text style={styles.botonTexto}>Agregar registro</Text>
         </Button>
         <FlatList
           data={response}
           renderItem={renderItem}
           keyExtractor={item => item.id_administrador.toString()}
+          contentContainerStyle={styles.list}
         />
         <Button mode="contained" onPress={handleLogOut} style={styles.button}>
           Cerrar Sesión
@@ -295,6 +297,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
+    padding: 20,
   },
   welcomeText: {
     fontSize: 24,
@@ -310,80 +313,91 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   containerInput: {
-    flexDirection: 'column',
+    width: '100%',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 20,
   },
   containerRow: {
+    width: '100%',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
   input: {
-    width: '80%',
+    width: '100%',
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
-    margin: 5,
+    marginVertical: 5,
   },
   botonAgregar: {
-    backgroundColor: 'blue',
+    backgroundColor: '#6200ee',
     padding: 10,
     borderRadius: 4,
-    maxHeight: 70,
     marginTop: 10,
   },
+  botonTexto: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
   buttonActualizar: {
-    marginTop: 10,
     padding: 10,
     backgroundColor: 'green',
     borderRadius: 8,
+    marginVertical: 5,
   },
   buttonEliminar: {
-    marginTop: 10,
     padding: 10,
     backgroundColor: 'red',
     borderRadius: 8,
+    marginVertical: 5,
   },
   buttonClose: {
-    marginStart: 15,
     padding: 10,
     backgroundColor: 'red',
     borderRadius: 8,
-  },
-  botonAgregarTexto: {
-    color: '#fff',
-    fontSize: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    textAlign: 'center',
   },
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff',
     padding: 20,
     marginBottom: 10,
     borderRadius: 8,
-    elevation: 3, // Para Android
-    shadowColor: '#000', // Para iOS
-    shadowOffset: { width: 0, height: 2 }, // Para iOS
-    shadowOpacity: 0.8, // Para iOS
-    shadowRadius: 2, // Para iOS
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    width: '100%',
   },
   cardText: {
     fontSize: 18,
+    marginBottom: 5,
+  },
+  cardLabel: {
+    fontWeight: 'bold',
   },
   errorText: {
     fontSize: 18,
     color: 'red',
-  }, title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
   },
+  list: {
+    paddingBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modal: {
+    paddingHorizontal: 20,
+  }
 });
 
 export default HomeScreen;

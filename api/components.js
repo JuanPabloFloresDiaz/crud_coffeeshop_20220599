@@ -1,6 +1,6 @@
 export default async function fetchData(filename, action, form = null) {
     // Variable que guarda la ip para importarla en la ruta general del servidor
-    let ip = `192.168.175.124`;
+    let ip = `192.168.1.6`;
     // Variable que sirve 
     const SERVER_URL = `http://${ip}/coffeeshop/api/`;
     const OPTIONS = {
