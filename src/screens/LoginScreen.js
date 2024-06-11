@@ -3,28 +3,30 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import fetchData from '../../api/components';
 
+// Componente de pantalla de inicio de sesión
 const LoginScreen = ({ logueado, setLogueado }) => {
 
-  //Estado de la app
+  // Estados para los campos de alias y clave
   const [alias, setAlias] = useState('');
   const [clave, setClave] = useState('');
 
+  // URL de la API para el usuario
   const USER_API = 'services/admin/administrador.php';
 
+  // Manejo de inicio de sesión
   const handleLogin = async () => {
-    //Realizar la petición http 
-    // Lógica de inicio de sesión
+    // Creación del formulario para la petición
     const formData = new FormData();
-    formData.append('alias', alias)
-    formData.append('clave', clave)
-    const data = await fetchData(USER_API, 'logIn', formData);
+    formData.append('alias', alias);
+    formData.append('clave', clave);
+
     try {
+      // Realización de la petición de inicio de sesión
+      const data = await fetchData(USER_API, 'logIn', formData);
       if (data.status) {
-        setLogueado(!logueado)
+        setLogueado(!logueado);
       } else {
         console.log(data);
-        // Alert the user about the error
-        console.log(data.error);
         Alert.alert('Error sesion', data.error);
       }
     } catch (error) {
@@ -33,19 +35,20 @@ const LoginScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Manejo de cierre de sesión
   const handleLogOut = async () => {
-    const data = await fetchData(USER_API, 'logOut');
     try {
+      const data = await fetchData(USER_API, 'logOut');
       if (data.status) {
-        setLogueado(false)
-      }else{
+        setLogueado(false);
+      } else {
         Alert.alert('Error sesion', data.error);
       }
     } catch (error) {
       console.log(data.error);
       Alert.alert('Error sesion', data.error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>

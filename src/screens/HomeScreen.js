@@ -4,8 +4,10 @@ import { View, FlatList, StyleSheet, ActivityIndicator, TextInput, TouchableOpac
 import { Text, Button, Modal, Dialog, Paragraph, Portal, PaperProvider } from 'react-native-paper';
 import fetchData from '../../api/components';
 
+// Componente de pantalla principal
 const HomeScreen = ({ logueado, setLogueado }) => {
 
+  // Estados para manejar la visibilidad de los modales y diálogos
   const [visible, setVisible] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -24,8 +26,10 @@ const HomeScreen = ({ logueado, setLogueado }) => {
   };
   const hideDeleteDialog = () => setDeleteDialogVisible(false);
 
+  // URL de la API para el usuario
   const USER_API = 'services/admin/administrador.php';
 
+  // Estados para manejar los datos, carga y errores
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nombre, setNombre] = useState('');
@@ -36,7 +40,8 @@ const HomeScreen = ({ logueado, setLogueado }) => {
   const [confirmarClave, setConfirmarClave] = useState('');
   const [error, setError] = useState(null);
 
-  const fetchDataFromApi = async () => {
+  // Función para obtener datos de la API
+  const fillList = async () => {
     try {
       const data = await fetchData(USER_API, 'readAll');
       setResponse(data.dataset);
@@ -47,20 +52,24 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Ejecuta fillList al montar el componente
   useEffect(() => {
-    fetchDataFromApi();
+    fillList();
   }, []);
 
+  // Ejecuta fillList cuando la pantalla recibe foco
   useFocusEffect(
     useCallback(() => {
-      fetchDataFromApi();
+      fillList();
     }, [])
   );
 
+  // Confirmar eliminación de registros
   const confirmarEliminacion = () => {
     eliminarRegistros(idToDelete);
   };
 
+  // Eliminar registros de la API
   const eliminarRegistros = async (idA) => {
     try {
       const form = new FormData();
@@ -68,7 +77,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
       const data = await fetchData(USER_API, 'deleteRow', form);
       if (data.status) {
         Alert.alert(data.message);
-        fetchDataFromApi();
+        fillList();
       } else {
         Alert.alert('Error ' + data.error);
       }
@@ -78,6 +87,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     hideDeleteDialog();
   };
 
+  // Actualizar registros en la API
   const actualizarRegistros = async () => {
     try {
       const form = new FormData();
@@ -90,7 +100,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
         console.log(data.message)
         Alert.alert(data.message);
         limpiarCampos();
-        fetchDataFromApi();
+        fillList();
         hideModal();
       } else {
         Alert.alert('Error ' + data.error);
@@ -100,6 +110,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Limpiar campos del formulario
   const limpiarCampos = async () => {
     setNombre('');
     setApellido('');
@@ -109,6 +120,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     setConfirmarClave('');
   };
 
+  // Insertar nuevos registros en la API
   const insertarRegistros = async () => {
     try {
       const form = new FormData();
@@ -122,7 +134,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
       if (data.status) {
         Alert.alert(data.message);
         limpiarCampos();
-        fetchDataFromApi();
+        fillList();
         hideModal();
       } else {
         Alert.alert('Error ' + data.error);
@@ -132,6 +144,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Manejo de edición de un ítem
   const openUpdate = async (id) => {
     const form = new FormData();
     form.append('idAdministrador', id);
@@ -151,6 +164,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Identificador de si se ingresa o se actualiza
   const handleSubmit = () => {
     if (idToUpdate) {
       actualizarRegistros();
@@ -159,6 +173,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     }
   };
 
+  // Renderizar cada ítem de la lista
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.cardText}><Text style={styles.cardLabel}>ID: </Text>{item.id_administrador}</Text>
@@ -177,6 +192,7 @@ const HomeScreen = ({ logueado, setLogueado }) => {
     </View>
   );
   
+  // Manejo de cierre de sesión
   const handleLogOut = async () => {
     const data = await fetchData(USER_API, 'logOut');
     try {
@@ -397,6 +413,13 @@ const styles = StyleSheet.create({
   },
   modal: {
     paddingHorizontal: 20,
+    backgroundColor: 'white', // Fondo blanco
+    padding: 20,
+    margin: 20,
+    borderRadius: 5,
+    // Nueva propiedad para dar opacidad al fondo
+    opacity: 1, 
+    elevation: 5,
   }
 });
 
